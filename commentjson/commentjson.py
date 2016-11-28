@@ -8,6 +8,14 @@ import re
 import traceback
 
 
+def _get_exception_message(e):
+    """Py2/3 compatibl_get_exception_message(e) extractor."""
+    try:
+        return str(e)  # py3
+    except:
+        return e.message  # py2
+
+
 class JSONLibraryException(Exception):
     ''' Exception raised when the JSON library in use raises an exception i.e.
     the exception is not caused by `commentjson` and only caused by the JSON
@@ -55,8 +63,8 @@ def loads(text, **kwargs):
 
     try:
         return json.loads('\n'.join(lines), **kwargs)
-    except Exception, e:
-        raise JSONLibraryException(e.message)
+    except Exception as e:
+        raise JSONLibraryException(_get_exception_message(e))
 
 
 def dumps(obj, **kwargs):
@@ -72,8 +80,8 @@ def dumps(obj, **kwargs):
 
     try:
         return json.dumps(obj, **kwargs)
-    except Exception, e:
-        raise JSONLibraryException(e.message)
+    except Exception as e:
+        raise JSONLibraryException(_get_exception_message(e))
 
 
 def load(fp, **kwargs):
@@ -90,8 +98,8 @@ def load(fp, **kwargs):
 
     try:
         return loads(fp.read(), **kwargs)
-    except Exception, e:
-        raise JSONLibraryException(e.message)
+    except Exception as e:
+        raise JSONLibraryException(_get_exception_message(e))
 
 
 def dump(obj, fp, **kwargs):
@@ -109,5 +117,5 @@ def dump(obj, fp, **kwargs):
 
     try:
         json.dump(obj, fp, **kwargs)
-    except Exception, e:
-        raise JSONLibraryException(e.message)
+    except Exception as e:
+        raise JSONLibraryException(_get_exception_message(e))
